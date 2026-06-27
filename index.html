@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>推播生死線測試</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
+    button { padding: 15px 30px; font-size: 18px; background-color: #ff6347; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    button:active { transform: scale(0.98); }
+  </style>
+</head>
+<body>
+
+  <h1>推播生死線測試 🚀</h1>
+  <p>請點擊下方按鈕，允許通知權限並測試推播。</p>
+  <button id="notifyBtn">發送測試推播</button>
+
+  <script>
+    // 1. 註冊 Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('✅ Service Worker 註冊成功，範圍:', reg.scope))
+          .catch(err => console.error('❌ Service Worker 註冊失敗:', err));
+      });
+    }
+
+    // 2. 按鈕點擊邏輯
+    document.getElementById('notifyBtn').addEventListener('click', async () => {
+      // 請求推播權限
+      const permission = await Notification.requestPermission();
+      
+      if (permission === 'granted') {
+        // 為了 PoC 快速驗證，我們先從前端直接呼叫 SW 顯示通知
+        // 未來這裡會改成打 API 給後端，由後端真正發送 Web Push
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification('🎉 測試成功！', {
+          body: '你的手機已經可以正常接收 PWA 推播了！',
+          icon: 'https://via.placeholder.com/192/ff6347/FFFFFF?text=Pik'
+        });
+      } else {
+        alert('你拒絕了通知權限，請在瀏覽器設定中開啟。');
+      }
+    });
+  </script>
+
+</body>
+</html>
