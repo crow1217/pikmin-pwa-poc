@@ -36,13 +36,18 @@
         // 為了 PoC 快速驗證，我們先從前端直接呼叫 SW 顯示通知
         // 未來這裡會改成打 API 給後端，由後端真正發送 Web Push
         const reg = await navigator.serviceWorker.ready;
-        reg.showNotification('🎉 測試成功！', {
-          body: '你的手機已經可以正常接收 PWA 推播了！',
-          icon: 'https://via.placeholder.com/192/ff6347/FFFFFF?text=Pik'
-        });
-      } else {
-        alert('你拒絕了通知權限，請在瀏覽器設定中開啟。');
-      }
+		
+       // 加上 5 秒的倒數計時！
+		console.log('計時開始，請趕快把手機螢幕鎖定！');
+		setTimeout(() => {
+		reg.showNotification('🍄 皮克敏雷達 (背景推播測試)', {
+        body: '就算手機鎖定，我也能喚醒你的螢幕！',
+        icon: 'https://via.placeholder.com/192/ff6347/FFFFFF?text=Pik'
+      });
+    }, 5000); // 5000 毫秒 = 5 秒
+    
+  } else {
+    alert('你拒絕了通知權限，請在瀏覽器設定中開啟。');
     });
   </script>
 
